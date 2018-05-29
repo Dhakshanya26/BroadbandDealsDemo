@@ -1,0 +1,100 @@
+﻿@model BroadbandDeals.UI.Models.BroadBandDealModel
+@using BroadbandDeals.UI.Enums
+@{
+    ViewBag.Title = "Broadband deals";
+}
+
+
+<div id="broad-band-wrapper" class="container">
+
+    @if (Model == null || ( Model.ResultModel != null && Model.ResultModel.ResultStatus != ResultStatus.Success))
+    {
+        <div class="error-message-wrapper">
+            @if (Model != null && Model.ResultModel != null && Model.ResultModel.ResultMessage != null)
+            {
+                <h4> @Model.ResultModel.ResultMessage</h4>
+            }
+            else
+            {
+                <h4> Unexpected Error occured, Please try again later.</h4>
+            }
+        </div>
+    }
+    else
+    {
+        if (Model.DealModels == null || !Model.DealModels.Any())
+        {
+            <div class="no-record-found">
+                <span>No record(s) found.</span>
+            </div>
+        }
+        else
+        {
+        <div class="row">
+            <table>
+                <tr class="table-header">
+                    <th>About</th>
+                    <th>Contract Length</th>
+                    <th>Speed/Usage</th>
+                    <th>Offer</th>
+                    <th>Tv</th>
+                    <th>Mobile</th>
+                    <th>Cost</th>
+                </tr>
+                <!--ko foreach: deals -->
+                <tr>
+                    <td data-bind="text:$data.Title"></td>
+                    <td data-bind="text:$data.ContractLength + ' Months'"></td>
+                    <td>
+                        <span data-bind="text:$data.SpeedLabel + ' MB '"></span><br /> <span data-bind="text:$data.UsageLabel"></span>
+                    </td>
+                    <td>
+                        <!--ko if: $data.Offer-->
+                        <img data-bind="attr:{src: $data.Offer.SmallLogo, title:$data.Offer.Title}" height="50" /> <br />
+                        <!--/ko-->
+                        <!--ko if:  $data.Offer.SmallLogo == null -->
+                        <span>NA</span>
+                        <!--/ko-->
+                    </td>
+                    <td>
+                        <!--ko if: $data.PopularChannels && $data.PopularChannels.length>0-->
+                        <!--ko foreach: $data.PopularChannels-->
+                        <img data-bind="attr:{src: $data.Logo, title:$data.Name}" height="10" /> <br />
+                        <!--/ko-->
+                        <!--/ko-->
+                        <!--ko if: !$data.PopularChannels || $data.PopularChannels.length<=0  -->
+                        <span>NA</span>
+                        <!--/ko-->
+                    </td>
+                    <td>
+                        <!--ko if: $data.Mobile  && $data.Mobile.Minutes != null-->
+                        <!--ko with: $data.Mobile-->
+                        Minutes: <span data-bind="text:$data.Minutes"></span>
+                        <br /> Data: <span data-bind="text:$data.Data"></span>
+                        <br /> Texts: <span data-bind="text:$data.Texts"></span>
+                        <br /> ConnectionType: <span data-bind="text:$data.ConnectionType"></span>
+                        <!--/ko-->
+                        <!--/ko-->
+                        <!--ko if: !$data.Mobile  || $data.Mobile.Minutes == null -->
+                        <span>NA</span>
+                        <!--/ko-->
+                    </td>
+                    <td data-bind="text:'£'+$data.Price"></td>
+                </tr>
+                <!--/ko-->
+
+            </table>
+        </div>
+        }
+    }
+</div>
+
+@section scripts{
+    <script src="~/Scripts/Custom/broadband.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var viewModel = new BroadbandModel(@Html.Raw(Json.Encode(Model)));
+            ko.applyBindings(viewModel, document.getElementById('broad-band-wrapper'));
+        });
+    </script>
+}

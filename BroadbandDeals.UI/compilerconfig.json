@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "Content/broadband.css",
+    "inputFile": "Content/broadband.scss"
+  },
+  {
+    "outputFile": "Content/sidenavbar.css",
+    "inputFile": "Content/sidenavbar.scss"
+  }
+]
